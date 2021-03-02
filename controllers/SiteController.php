@@ -93,33 +93,22 @@ class SiteController extends Controller
         $usersList = $users->getUsersList();
         $adminList = $users->getAdminList();
 
-        //var_dump($allMessages);
         if($form_model->load(\Yii::$app->request->post())){
-            $model->writeCommentToDB($form_model);
+            $user_model = Yii::$app->user->identity;
+            $model->writeMessageToDB($form_model, $user_model);
             return $this->goBack();
         }
 
         if($form_manage->load(\Yii::$app->request->post())){
-            //print_r($form_manage);
             $users->changeUserType($form_manage);
             return $this->goBack();
         }
 
         if($manage_messages->load(\Yii::$app->request->post())){
-            //print_r($manage_messages->status_message);
             $model->changeMessageStatus($manage_messages);
             return $this->goBack();
         }
-
-        /*if($banned_messages->load(\Yii::$app->request->post())){
-            //print_r($manage_messages->status_message);
-            $model->changeMessageStatus($banned_messages);
-            return $this->goBack();
-        }*/
-
-        //var_dump($usersList);
-        //новая модель чтоб поле для ввода очищалось и не было лишних запросов при обновлении страницы
-        //$form_model = new ChatForm();
+        
         return $this->render('index', [allMessages => $allMessages, 
                                         form_model => new ChatForm(),
                                         adminList => $adminList,

@@ -2,7 +2,7 @@
     margin:0 auto;
     position: relative;
     width: 1140px;
-    height: 600px;
+    height: 670px;
     overflow: auto;
 }
 
@@ -37,13 +37,17 @@
     right: 0;
 }
 
+#bannedMessagesList td{
+    max-width: 100px;
+}
+
 body{
     word-wrap: break-word;
 }
 
 table td{
     /*word-wrap: break-word;*/
-    max-width: 180px;
+    max-width: 165px;
     text-align: center;
     vertical-align: middle;
 }

@@ -43,14 +43,15 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
-            'enablePrettyUrl' => true,
+            'enablePrettyUrl' => false,
+            'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                'create' => 'order/create',
+                '<controller:\w+>/<action:\w+>/' => '<controller>/<action>'
             ],
         ],
-        */
     ],
     'params' => $params,
 ];

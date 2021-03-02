@@ -10,6 +10,9 @@ use app\models\User;
  */
 class SignupForm extends Model
 {
+    const STATUS_ADMINISTATOR = 1;
+    const STATUS_SIMPLE_USER = 0;
+
     public $username;
     public $email;
     public $password;
@@ -44,9 +47,8 @@ class SignupForm extends Model
         
         $user = new User();
         $user->username = $this->username;
-        //$user->email = 'test@mail.ru';
         $user->setPassword($this->password);
-        $user->type = 'simpleUser';
+        $user->type = self::STATUS_SIMPLE_USER;
 
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
@@ -54,27 +56,7 @@ class SignupForm extends Model
 
         //пользователь будет активен сразу после регистрации(подтверждать на почте ничего не надо)
         $user->status = User::STATUS_ACTIVE;
-        //echo "Польователь записался";
         return $user->save();
 
     }
-
-    /**
-     * Sends confirmation email to user
-     * @param User $user user model to with email should be send
-     * @return bool whether the email was sent
-     */
-    // protected function sendEmail($user)
-    // {
-    //     return Yii::$app
-    //         ->mailer
-    //         ->compose(
-    //             ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
-    //             ['user' => $user]
-    //         )
-    //         ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
-    //         ->setTo($this->email)
-    //         ->setSubject('Account registration at ' . Yii::$app->name)
-    //         ->send();
-    // }
 }

@@ -4,28 +4,25 @@ namespace app\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use DateTime;
 
 
 
 class Messages extends ActiveRecord
 {
+    const MESSAGE_DISPLAYED = 1;
+    const MESSAGE_NOT_DISPLAYED = 0;
+
     public static function tableName()
     {
         return 'messages';
     }
 
+    
     public function getAllMessages()
     {
-        //return Messages::find()->all();
-        $query = new Messages();
+        $allMessages = Messages::find()->with('user')->All();
 
-        $allMessages = Messages::find()
-            ->select(['`message`, `username`, `time_of_writing`, `author_id`, `status_message`, `messages`.`id`'])
-            ->leftJoin('user', '`user`.`id` = `messages`.`author_id`')
-            ->with('user')
-            ->asArray()
-            ->all();
-            //var_dump($allMessages);
         return $allMessages;
     }
 
@@ -33,31 +30,32 @@ class Messages extends ActiveRecord
     {
         $currentMessage = Messages::find()->where(['id' => $manage_messages->id_message])->one();
         
-        if ($currentMessage->status_message == 'displayed') {
-            $currentMessage->status_message = 'notDisplayed';
+        if ($currentMessage->status_message == self::MESSAGE_DISPLAYED) {
+            $currentMessage->status_message = self::MESSAGE_NOT_DISPLAYED;
             $currentMessage->save();   
         }else{
-            $currentMessage->status_message = 'displayed';
+            $currentMessage->status_message = self::MESSAGE_DISPLAYED;
             $currentMessage->save();
         }   
     }
 
     public function getUser()
     {
-        return $this->hasMany(User::className(), ['id' => 'author_id']);
+        return $this->hasOne(User::className(), ['id' => 'author_id']);
     }
 
-    public function writeCommentToDB(ChatForm $form_model)
+
+
+    public function writeMessageToDB(ChatForm $form_model, $user_model)
     {
 
         $message = new Messages();
-
-        $message->author_id = Yii::$app->user->identity->id;
+        
+        $message->author_id = $user_model->id;
         $message->message = $form_model->message;
-        $message->time_of_writing = date('Y-m-d H:i:s');
-        $message->status_message = 'displayed';
+        $message->time_of_writing = date(DATE_ATOM);
+        $message->status_message = self::MESSAGE_DISPLAYED;
 
-        //
         $message->save();
     }
 }

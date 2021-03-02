@@ -24,6 +24,7 @@ class AppAsset extends AssetBundle
         'css/chat.css'
     ];
     public $js = [
+        'js/scrollDown.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

@@ -28,13 +28,16 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
 
+    const STATUS_ADMINISTATOR = 1;
+    const STATUS_SIMPLE_USER = 0;
+
 
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return '{{%user}}';
+        return 'user';
     }
 
     /**
@@ -212,7 +215,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getAdminList()
     {
-        $info = User::find()->select('id, username')->where('type = "administrator" ')->all();
+        $info = User::find()->select('id, username')->where(['type' => self::STATUS_ADMINISTATOR])->all();
 
         $adminList = array();
 
@@ -235,11 +238,11 @@ class User extends ActiveRecord implements IdentityInterface
     {   
         $currentUser = User::find()->where(['id' => $form_model->user_id])->one();
         
-        if ($currentUser->type == 'administrator') {
-            $currentUser->type = 'simpleUser';
+        if ($currentUser->type == self::STATUS_ADMINISTATOR) {
+            $currentUser->type = self::STATUS_SIMPLE_USER;
             $currentUser->save();   
         }else{
-            $currentUser->type = 'administrator';
+            $currentUser->type = self::STATUS_ADMINISTATOR;
             $currentUser->save();
         }
     }
